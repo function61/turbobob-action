@@ -1,6 +1,4 @@
-FROM alpine:latest
+FROM fn61/turbobob:latest
 
-ENTRYPOINT #!/bin/sh -l \
-	echo "Hello $1" \
-	time=$(date) \
-	echo "::set-output name=time::$time"
+# using the above as a hack to just refer to an existing built image4, because it seems that with
+# GitHub actions we need a Dockerfile whether we actually want it or not.
