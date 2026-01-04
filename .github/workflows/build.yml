@@ -4,6 +4,10 @@ on:
   # this opts us in to be a reusable workflow.
   # https://docs.github.com/en/actions/sharing-automations/reusing-workflows#creating-a-reusable-workflow
   workflow_call:
+    secrets:
+      DOCKER_CREDS:
+        description: 'Container registry credentials to push (non-GHCR) images with (optional)'
+        required: false
 
 jobs:
   build:
@@ -21,8 +25,14 @@ jobs:
     - name: Build
       run: |
         set -eu
+        # If DOCKER_CREDS is unset or empty, use creds for GitHub's GHCR
+        if [ -z "${DOCKER_CREDS-}" ]; then
+          export DOCKER_CREDS="${DOCKER_CREDS_FOR_GITHUB-}"
+        fi
+        
         # better to not store in local workdir (would always make workdir unclean Git-wise)
         docker run --rm -v /usr/local/bin:/host --entrypoint= ghcr.io/function61/turbobob:latest sh -c 'cp $(which bob) /host/'
         bob build in-ci-autodetect-settings
       env:
-        DOCKER_CREDS: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
+        DOCKER_CREDS: ${{ secrets.DOCKER_CREDS }}
+        DOCKER_CREDS_FOR_GITHUB: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
