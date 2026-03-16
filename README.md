@@ -1,3 +1,9 @@
+Houses two ~separate things:
+
+- [Turbo Bob](https://github.com/function61/turbobob) GitHub action
+- GitHub reusable workflow for doing build with Turbo Bob
+  * [example where this is used from](https://github.com/function61/varasto/blob/main/.github/workflows/build.yml)
+
 Why reusable workflow?
 ----------------------
 
