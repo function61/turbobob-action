@@ -23,9 +23,13 @@ jobs:
       with:
         platforms: riscv64,arm64,arm
 
-    # configures `docker-container` as driver for buildx (to support multi-architecture builds which the default `docker` would not).
-    # https://docs.docker.com/reference/cli/docker/buildx/create/#driver
-    - uses: docker/setup-buildx-action@v4
+    # does the equivalent of `docker/setup-buildx-action` but it's a small thing to implement ourselves without adding another dependency
+    - name: Configure builder
+      run: |
+        set -eu
+        # configures `docker-container` as driver for buildx (to support multi-architecture builds which the default `docker` would not).
+        # https://docs.docker.com/reference/cli/docker/buildx/create/#driver
+        docker buildx create --driver=docker-container --name=turbobob --use --bootstrap
 
     # does the equivalent of `$ bob build`
     - name: Build
